@@ -5,29 +5,33 @@
   <meta charset="UTF-8" />
   <title>Padelkaverit</title>
   <style>
-    /* Ensure the document is full viewport */
     html,
     body {
       margin: 0;
       width: 100vw;
       height: 100vh;
       overflow: hidden;
+      position: relative;
+      background-color: white;
     }
 
-    /* The gradient background that will be visible through the mask */
-    .maskedBG {
+    #webgl-canvas {
+      position: absolute;
       width: 100%;
       height: 100%;
-      background: linear-gradient(120deg, red, cyan, lime);
-      background-size: 400% 400%;
-      animation: gradientMove 4s infinite alternate;
+      z-index: 1;
+    }
 
-      /* Use the SVG (with white fill) as a mask */
+    .mask-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      background-color: transparent;
       -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 204 56'><g fill='white'><path d='M196.132 55.9997H184.788V39.3594H176.922V30.4008H204V39.3594H196.132V55.9997Z'/><path d='M173.263 55.9993H161.919V30.4004H173.263V55.9993Z'/><path d='M140.513 37.8973V41.5542H143.44C144.245 41.5542 144.874 41.3903 145.326 41.0611C145.776 40.7319 146.002 40.2868 146.002 39.7257C146.002 39.1647 145.776 38.7195 145.326 38.3917C144.874 38.0625 144.245 37.8973 143.44 37.8973H140.513ZM158.626 55.9996H146.44L142.599 49.0508H140.878V55.9996H129.536V30.4007H144.721C147.502 30.4007 149.838 30.8018 151.729 31.6068C153.619 32.4117 155.028 33.5153 155.955 34.9173C156.882 36.3193 157.346 37.9212 157.346 39.7257C157.346 41.3836 156.962 42.8656 156.192 44.169C155.424 45.4738 154.284 46.5279 152.772 47.3329L158.626 55.9996Z'/><path d='M124.595 55.9997H99.1642V30.4008H124.23V37.8974H110.507V40.091H120.754V46.3082H110.507V48.5032H124.595V55.9997Z'/><path d='M85.9915 55.9997H72.8178L62.5725 30.4008H74.2086L79.4053 46.9305H79.588L84.8207 30.4008H96.2368L85.9915 55.9997Z'/><path d='M47.936 38.2628L45.9597 45.3582H50.0576L48.0826 38.2628H47.936ZM42.4473 56H30.9205L41.5325 30.3997H54.7048L65.3169 56H53.5713L52.1805 51.7579H43.8381L42.4473 56Z'/><path d='M11.3441 55.9997H0V30.4008H11.3441V38.4451L19.0278 30.4008H31.1039L20.4919 41.1892L31.8361 55.9997H19.5771L13.5404 47.9181L11.3441 50.1477V55.9997Z'/><path d='M187.259 25.5998H163.474V0.000915527H174.817V16.6399H187.259V25.5998Z'/><path d='M158.534 25.5998H133.103V0.000915527H158.169V7.49747H144.446V9.69114H154.693V15.9083H144.446V18.1033H158.534V25.5998Z'/><path d='M112.429 17.9201C113.917 17.9201 115.173 17.4444 116.197 16.4941C117.223 15.5426 117.735 14.3125 117.735 12.7998C117.735 11.2885 117.223 10.0571 116.197 9.10687C115.173 8.15531 113.917 7.68086 112.429 7.68086H110.782V17.9201H112.429ZM99.4379 25.5993V0.000396729H112.429C115.917 0.000396729 118.918 0.573465 121.43 1.71961C123.942 2.86574 125.845 4.40769 127.139 6.34547C128.431 8.28324 129.078 10.4356 129.078 12.7998C129.078 15.1654 128.431 17.3164 127.139 19.2555C125.845 21.1933 123.942 22.7353 121.43 23.8814C118.918 25.0276 115.917 25.5993 112.429 25.5993H99.4379Z'/><path d='M79.3134 7.86306L77.3372 14.9585H81.4351L79.4601 7.86306H79.3134ZM73.8247 25.6002H62.2979L72.91 0H86.0836L96.6943 25.6002H84.9488L83.558 21.3582H75.2156L73.8247 25.6002Z'/><path d='M49.6738 11.52C50.4792 11.52 51.106 11.3255 51.558 10.935C52.0087 10.5445 52.2355 10.07 52.2355 9.50897C52.2355 8.94789 52.0087 8.47211 51.558 8.08296C51.106 7.69247 50.4792 7.49656 49.6738 7.49656H47.1121V11.52H49.6738ZM36.1347 25.6002V0H50.9539C53.6129 0 55.8946 0.426476 57.7975 1.28075C59.7004 2.13394 61.1392 3.28674 62.1154 4.73675C63.0902 6.18675 63.5782 7.77801 63.5782 9.50897C63.5782 11.2404 63.0902 12.8317 62.1154 14.2817C61.1392 15.7317 59.7004 16.8842 57.7975 17.7372C55.8946 18.5901 53.6129 19.0166 50.9539 19.0166H47.4775V25.6002H36.1347Z'/></g></svg>") no-repeat center / contain;
-
       mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 204 56'><g fill='white'><path d='M196.132 55.9997H184.788V39.3594H176.922V30.4008H204V39.3594H196.132V55.9997Z'/><path d='M173.263 55.9993H161.919V30.4004H173.263V55.9993Z'/><path d='M140.513 37.8973V41.5542H143.44C144.245 41.5542 144.874 41.3903 145.326 41.0611C145.776 40.7319 146.002 40.2868 146.002 39.7257C146.002 39.1647 145.776 38.7195 145.326 38.3917C144.874 38.0625 144.245 37.8973 143.44 37.8973H140.513ZM158.626 55.9996H146.44L142.599 49.0508H140.878V55.9996H129.536V30.4007H144.721C147.502 30.4007 149.838 30.8018 151.729 31.6068C153.619 32.4117 155.028 33.5153 155.955 34.9173C156.882 36.3193 157.346 37.9212 157.346 39.7257C157.346 41.3836 156.962 42.8656 156.192 44.169C155.424 45.4738 154.284 46.5279 152.772 47.3329L158.626 55.9996Z'/><path d='M124.595 55.9997H99.1642V30.4008H124.23V37.8974H110.507V40.091H120.754V46.3082H110.507V48.5032H124.595V55.9997Z'/><path d='M85.9915 55.9997H72.8178L62.5725 30.4008H74.2086L79.4053 46.9305H79.588L84.8207 30.4008H96.2368L85.9915 55.9997Z'/><path d='M47.936 38.2628L45.9597 45.3582H50.0576L48.0826 38.2628H47.936ZM42.4473 56H30.9205L41.5325 30.3997H54.7048L65.3169 56H53.5713L52.1805 51.7579H43.8381L42.4473 56Z'/><path d='M11.3441 55.9997H0V30.4008H11.3441V38.4451L19.0278 30.4008H31.1039L20.4919 41.1892L31.8361 55.9997H19.5771L13.5404 47.9181L11.3441 50.1477V55.9997Z'/><path d='M187.259 25.5998H163.474V0.000915527H174.817V16.6399H187.259V25.5998Z'/><path d='M158.534 25.5998H133.103V0.000915527H158.169V7.49747H144.446V9.69114H154.693V15.9083H144.446V18.1033H158.534V25.5998Z'/><path d='M112.429 17.9201C113.917 17.9201 115.173 17.4444 116.197 16.4941C117.223 15.5426 117.735 14.3125 117.735 12.7998C117.735 11.2885 117.223 10.0571 116.197 9.10687C115.173 8.15531 113.917 7.68086 112.429 7.68086H110.782V17.9201H112.429ZM99.4379 25.5993V0.000396729H112.429C115.917 0.000396729 118.918 0.573465 121.43 1.71961C123.942 2.86574 125.845 4.40769 127.139 6.34547C128.431 8.28324 129.078 10.4356 129.078 12.7998C129.078 15.1654 128.431 17.3164 127.139 19.2555C125.845 21.1933 123.942 22.7353 121.43 23.8814C118.918 25.0276 115.917 25.5993 112.429 25.5993H99.4379Z'/><path d='M79.3134 7.86306L77.3372 14.9585H81.4351L79.4601 7.86306H79.3134ZM73.8247 25.6002H62.2979L72.91 0H86.0836L96.6943 25.6002H84.9488L83.558 21.3582H75.2156L73.8247 25.6002Z'/><path d='M49.6738 11.52C50.4792 11.52 51.106 11.3255 51.558 10.935C52.0087 10.5445 52.2355 10.07 52.2355 9.50897C52.2355 8.94789 52.0087 8.47211 51.558 8.08296C51.106 7.69247 50.4792 7.49656 49.6738 7.49656H47.1121V11.52H49.6738ZM36.1347 25.6002V0H50.9539C53.6129 0 55.8946 0.426476 57.7975 1.28075C59.7004 2.13394 61.1392 3.28674 62.1154 4.73675C63.0902 6.18675 63.5782 7.77801 63.5782 9.50897C63.5782 11.2404 63.0902 12.8317 62.1154 14.2817C61.1392 15.7317 59.7004 16.8842 57.7975 17.7372C55.8946 18.5901 53.6129 19.0166 50.9539 19.0166H47.4775V25.6002H36.1347Z'/></g></svg>");
-
-      /* Center and scale the mask */
       -webkit-mask-size: contain;
       -webkit-mask-repeat: no-repeat;
       -webkit-mask-position: center;
@@ -36,20 +40,298 @@
       mask-position: center;
     }
 
-    @keyframes gradientMove {
-      0% {
-        background-position: 0% 0%;
-      }
-
-      100% {
-        background-position: 100% 100%;
-      }
+    .canvas-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      height: auto;
+      aspect-ratio: 204 / 56;
+      z-index: 1;
+      -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 204 56'><g fill='white'><path d='M196.132 55.9997H184.788V39.3594H176.922V30.4008H204V39.3594H196.132V55.9997Z'/><path d='M173.263 55.9993H161.919V30.4004H173.263V55.9993Z'/><path d='M140.513 37.8973V41.5542H143.44C144.245 41.5542 144.874 41.3903 145.326 41.0611C145.776 40.7319 146.002 40.2868 146.002 39.7257C146.002 39.1647 145.776 38.7195 145.326 38.3917C144.874 38.0625 144.245 37.8973 143.44 37.8973H140.513ZM158.626 55.9996H146.44L142.599 49.0508H140.878V55.9996H129.536V30.4007H144.721C147.502 30.4007 149.838 30.8018 151.729 31.6068C153.619 32.4117 155.028 33.5153 155.955 34.9173C156.882 36.3193 157.346 37.9212 157.346 39.7257C157.346 41.3836 156.962 42.8656 156.192 44.169C155.424 45.4738 154.284 46.5279 152.772 47.3329L158.626 55.9996Z'/><path d='M124.595 55.9997H99.1642V30.4008H124.23V37.8974H110.507V40.091H120.754V46.3082H110.507V48.5032H124.595V55.9997Z'/><path d='M85.9915 55.9997H72.8178L62.5725 30.4008H74.2086L79.4053 46.9305H79.588L84.8207 30.4008H96.2368L85.9915 55.9997Z'/><path d='M47.936 38.2628L45.9597 45.3582H50.0576L48.0826 38.2628H47.936ZM42.4473 56H30.9205L41.5325 30.3997H54.7048L65.3169 56H53.5713L52.1805 51.7579H43.8381L42.4473 56Z'/><path d='M11.3441 55.9997H0V30.4008H11.3441V38.4451L19.0278 30.4008H31.1039L20.4919 41.1892L31.8361 55.9997H19.5771L13.5404 47.9181L11.3441 50.1477V55.9997Z'/><path d='M187.259 25.5998H163.474V0.000915527H174.817V16.6399H187.259V25.5998Z'/><path d='M158.534 25.5998H133.103V0.000915527H158.169V7.49747H144.446V9.69114H154.693V15.9083H144.446V18.1033H158.534V25.5998Z'/><path d='M112.429 17.9201C113.917 17.9201 115.173 17.4444 116.197 16.4941C117.223 15.5426 117.735 14.3125 117.735 12.7998C117.735 11.2885 117.223 10.0571 116.197 9.10687C115.173 8.15531 113.917 7.68086 112.429 7.68086H110.782V17.9201H112.429ZM99.4379 25.5993V0.000396729H112.429C115.917 0.000396729 118.918 0.573465 121.43 1.71961C123.942 2.86574 125.845 4.40769 127.139 6.34547C128.431 8.28324 129.078 10.4356 129.078 12.7998C129.078 15.1654 128.431 17.3164 127.139 19.2555C125.845 21.1933 123.942 22.7353 121.43 23.8814C118.918 25.0276 115.917 25.5993 112.429 25.5993H99.4379Z'/><path d='M79.3134 7.86306L77.3372 14.9585H81.4351L79.4601 7.86306H79.3134ZM73.8247 25.6002H62.2979L72.91 0H86.0836L96.6943 25.6002H84.9488L83.558 21.3582H75.2156L73.8247 25.6002Z'/><path d='M49.6738 11.52C50.4792 11.52 51.106 11.3255 51.558 10.935C52.0087 10.5445 52.2355 10.07 52.2355 9.50897C52.2355 8.94789 52.0087 8.47211 51.558 8.08296C51.106 7.69247 50.4792 7.49656 49.6738 7.49656H47.1121V11.52H49.6738ZM36.1347 25.6002V0H50.9539C53.6129 0 55.8946 0.426476 57.7975 1.28075C59.7004 2.13394 61.1392 3.28674 62.1154 4.73675C63.0902 6.18675 63.5782 7.77801 63.5782 9.50897C63.5782 11.2404 63.0902 12.8317 62.1154 14.2817C61.1392 15.7317 59.7004 16.8842 57.7975 17.7372C55.8946 18.5901 53.6129 19.0166 50.9539 19.0166H47.4775V25.6002H36.1347Z'/></g></svg>") no-repeat center / contain;
+      mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 204 56'><g fill='white'><path d='M196.132 55.9997H184.788V39.3594H176.922V30.4008H204V39.3594H196.132V55.9997Z'/><path d='M173.263 55.9993H161.919V30.4004H173.263V55.9993Z'/><path d='M140.513 37.8973V41.5542H143.44C144.245 41.5542 144.874 41.3903 145.326 41.0611C145.776 40.7319 146.002 40.2868 146.002 39.7257C146.002 39.1647 145.776 38.7195 145.326 38.3917C144.874 38.0625 144.245 37.8973 143.44 37.8973H140.513ZM158.626 55.9996H146.44L142.599 49.0508H140.878V55.9996H129.536V30.4007H144.721C147.502 30.4007 149.838 30.8018 151.729 31.6068C153.619 32.4117 155.028 33.5153 155.955 34.9173C156.882 36.3193 157.346 37.9212 157.346 39.7257C157.346 41.3836 156.962 42.8656 156.192 44.169C155.424 45.4738 154.284 46.5279 152.772 47.3329L158.626 55.9996Z'/><path d='M124.595 55.9997H99.1642V30.4008H124.23V37.8974H110.507V40.091H120.754V46.3082H110.507V48.5032H124.595V55.9997Z'/><path d='M85.9915 55.9997H72.8178L62.5725 30.4008H74.2086L79.4053 46.9305H79.588L84.8207 30.4008H96.2368L85.9915 55.9997Z'/><path d='M47.936 38.2628L45.9597 45.3582H50.0576L48.0826 38.2628H47.936ZM42.4473 56H30.9205L41.5325 30.3997H54.7048L65.3169 56H53.5713L52.1805 51.7579H43.8381L42.4473 56Z'/><path d='M11.3441 55.9997H0V30.4008H11.3441V38.4451L19.0278 30.4008H31.1039L20.4919 41.1892L31.8361 55.9997H19.5771L13.5404 47.9181L11.3441 50.1477V55.9997Z'/><path d='M187.259 25.5998H163.474V0.000915527H174.817V16.6399H187.259V25.5998Z'/><path d='M158.534 25.5998H133.103V0.000915527H158.169V7.49747H144.446V9.69114H154.693V15.9083H144.446V18.1033H158.534V25.5998Z'/><path d='M112.429 17.9201C113.917 17.9201 115.173 17.4444 116.197 16.4941C117.223 15.5426 117.735 14.3125 117.735 12.7998C117.735 11.2885 117.223 10.0571 116.197 9.10687C115.173 8.15531 113.917 7.68086 112.429 7.68086H110.782V17.9201H112.429ZM99.4379 25.5993V0.000396729H112.429C115.917 0.000396729 118.918 0.573465 121.43 1.71961C123.942 2.86574 125.845 4.40769 127.139 6.34547C128.431 8.28324 129.078 10.4356 129.078 12.7998C129.078 15.1654 128.431 17.3164 127.139 19.2555C125.845 21.1933 123.942 22.7353 121.43 23.8814C118.918 25.0276 115.917 25.5993 112.429 25.5993H99.4379Z'/><path d='M79.3134 7.86306L77.3372 14.9585H81.4351L79.4601 7.86306H79.3134ZM73.8247 25.6002H62.2979L72.91 0H86.0836L96.6943 25.6002H84.9488L83.558 21.3582H75.2156L73.8247 25.6002Z'/><path d='M49.6738 11.52C50.4792 11.52 51.106 11.3255 51.558 10.935C52.0087 10.5445 52.2355 10.07 52.2355 9.50897C52.2355 8.94789 52.0087 8.47211 51.558 8.08296C51.106 7.69247 50.4792 7.49656 49.6738 7.49656H47.1121V11.52H49.6738ZM36.1347 25.6002V0H50.9539C53.6129 0 55.8946 0.426476 57.7975 1.28075C59.7004 2.13394 61.1392 3.28674 62.1154 4.73675C63.0902 6.18675 63.5782 7.77801 63.5782 9.50897C63.5782 11.2404 63.0902 12.8317 62.1154 14.2817C61.1392 15.7317 59.7004 16.8842 57.7975 17.7372C55.8946 18.5901 53.6129 19.0166 50.9539 19.0166H47.4775V25.6002H36.1347Z'/></g></svg>") no-repeat center / contain;
+      -webkit-mask-size: 100% 100%;
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-size: 100% 100%;
+      mask-repeat: no-repeat;
+      mask-position: center;
     }
   </style>
 </head>
 
 <body>
-  <div class="maskedBG"></div>
+  <div class="canvas-wrapper">
+    <canvas id="webgl-canvas"></canvas>
+  </div>
+  <div class="mask-container" id="mask-container"></div>
+
+  <script>
+    const canvas = document.getElementById('webgl-canvas');
+    const gl = canvas.getContext('webgl');
+    
+    if (!gl) {
+      console.error('WebGL not supported');
+    }
+    
+    const canvasWrapper = document.querySelector('.canvas-wrapper');
+    function resizeCanvas() {
+      const minWidth = 600;
+      const minHeight = 164;
+      canvasWrapper.style.width = '100%';  
+      canvasWrapper.style.aspectRatio = '1/1';
+      const wrapperRect = canvasWrapper.getBoundingClientRect();
+      const width = Math.max(wrapperRect.width, minWidth);
+      const height = Math.max(wrapperRect.height, minHeight);
+      canvas.width = width;
+      canvas.height = height;
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const vertexShaderSource = `
+      attribute vec2 a_position;
+      attribute vec2 a_texCoord;
+      varying vec2 vUv;
+      void main() {
+        vUv = a_texCoord;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `;
+
+    const fragmentShaderSource = `
+      precision mediump float;
+      varying vec2 vUv;
+      uniform float u_time;
+      vec4 permute(vec4 x) {
+        return mod(((x*34.0)+1.0)*x, 289.0);
+      }
+      vec4 taylorInvSqrt(vec4 r) {
+        return 1.79284291400159 - 0.85373472095314 * r;
+      }
+      float perlinNoise(vec3 P) {
+        vec3 Pi0 = floor(P);
+        vec3 Pi1 = Pi0 + vec3(1.0);
+        Pi0 = mod(Pi0, 289.0);
+        Pi1 = mod(Pi1, 289.0);
+        vec3 Pf0 = fract(P);
+        vec3 Pf1 = Pf0 - vec3(1.0);
+        vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
+        vec4 iy = vec4(Pi0.yy, Pi1.yy);
+        vec4 iz0 = Pi0.zzzz;
+        vec4 iz1 = Pi1.zzzz;
+        vec4 ixy = permute(permute(ix) + iy);
+        vec4 ixy0 = permute(ixy + iz0);
+        vec4 ixy1 = permute(ixy + iz1);
+        vec4 gx0 = ixy0 / 7.0;
+        vec4 gy0 = fract(floor(gx0) / 7.0) - 0.5;
+        gx0 = fract(gx0);
+        vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
+        vec4 sz0 = step(gz0, vec4(0.0));
+        gx0 -= sz0 * (step(0.0, gx0) - 0.5);
+        gy0 -= sz0 * (step(0.0, gy0) - 0.5);
+
+        vec4 gx1 = ixy1 / 7.0;
+        vec4 gy1 = fract(floor(gx1) / 7.0) - 0.5;
+        gx1 = fract(gx1);
+        vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
+        vec4 sz1 = step(gz1, vec4(0.0));
+        gx1 -= sz1 * (step(0.0, gx1) - 0.5);
+        gy1 -= sz1 * (step(0.0, gy1) - 0.5);
+        vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
+        vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
+        vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
+        vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
+        vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
+        vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
+        vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
+        vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
+
+        vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
+        g000 *= norm0.x;
+        g010 *= norm0.y;
+        g100 *= norm0.z;
+        g110 *= norm0.w;
+        vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
+        g001 *= norm1.x;
+        g011 *= norm1.y;
+        g101 *= norm1.z;
+        g111 *= norm1.w;
+
+        float n000 = dot(g000, Pf0);
+        float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
+        float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
+        float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
+        float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
+        float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
+        float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
+        float n111 = dot(g111, Pf1);
+
+        vec3 fade_xyz = Pf0 * Pf0 * Pf0 * (Pf0 * (Pf0 * 6.0 - 15.0) + 10.0);
+        vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
+        vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
+        float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
+        return 2.2 * n_xyz;
+      }
+
+
+      vec3 customBlend(vec3 base, vec3 blend) {
+        vec3 sat1 = base * 0.7 + 0.3;
+        vec3 sat2 = blend;
+        return pow(sat1 * sat2, vec3(1.1));
+      }
+
+      void main() {
+        float maxRadius = 1.5;
+        float duration = 3.0;
+        vec3 topLeftColor = vec3(1.0, 0.2, 0.5);     // Bright Pink
+        vec3 topRightColor = vec3(0.0, 0.8, 1.0);    // Cyan-blue
+        vec3 bottomLeftColor = vec3(1.0, 0.6, 0.0);  // Orange
+        vec3 bottomRightColor = vec3(0.2, 0.9, 0.5); // Green
+        
+        vec2 topLeft = vec2(0.0, 1.0);
+        vec2 topRight = vec2(1.0, 1.0);
+        vec2 bottomLeft = vec2(0.0, 0.0);
+        vec2 bottomRight = vec2(1.0, 0.0);
+        
+        float topLeftDist = length(vUv - topLeft);
+        float topRightDist = length(vUv - topRight);
+        float bottomLeftDist = length(vUv - bottomLeft);
+        float bottomRightDist = length(vUv - bottomRight);
+        
+        float tl_delay = 0.0;
+        float tr_delay = 0.0;
+        float bl_delay = 0.0;
+        float br_delay = 0.0;
+        
+        float tl_elapsed = max(0.0, u_time - tl_delay);
+        float tr_elapsed = max(0.0, u_time - tr_delay);
+        float bl_elapsed = max(0.0, u_time - bl_delay);
+        float br_elapsed = max(0.0, u_time - br_delay);
+        
+        float tl_progress = min(tl_elapsed / duration, 1.0);
+        float tr_progress = min(tr_elapsed / duration, 1.0);
+        float bl_progress = min(bl_elapsed / duration, 1.0);
+        float br_progress = min(br_elapsed / duration, 1.0);
+        
+        tl_progress = tl_progress * tl_progress * (3.0 - 2.0 * tl_progress);
+        tr_progress = tr_progress * tr_progress * (3.0 - 2.0 * tr_progress);
+        bl_progress = bl_progress * bl_progress * (3.0 - 2.0 * bl_progress);
+        br_progress = br_progress * br_progress * (3.0 - 2.0 * br_progress);
+        
+        float topLeftRadius = maxRadius * tl_progress;
+        float topRightRadius = maxRadius * tr_progress;
+        float bottomLeftRadius = maxRadius * bl_progress;
+        float bottomRightRadius = maxRadius * br_progress;
+        
+        float noise = 
+          perlinNoise(vec3(vUv * 32.0, u_time / 8.0)) * 0.5 +
+          perlinNoise(vec3(vUv * 128.0, u_time / 2.0)) * 0.25;
+        
+        float topLeftDistNoise = topLeftDist + (noise * 0.25);
+        float topRightDistNoise = topRightDist + (noise * 0.25);
+        float bottomLeftDistNoise = bottomLeftDist + (noise * 0.25);
+        float bottomRightDistNoise = bottomRightDist + (noise * 0.25);
+        
+        float topLeftEdge = 1.0 - smoothstep(topLeftRadius - 0.03, topLeftRadius, topLeftDistNoise);
+        float topRightEdge = 1.0 - smoothstep(topRightRadius - 0.03, topRightRadius, topRightDistNoise);
+        float bottomLeftEdge = 1.0 - smoothstep(bottomLeftRadius - 0.03, bottomLeftRadius, bottomLeftDistNoise);
+        float bottomRightEdge = 1.0 - smoothstep(bottomRightRadius - 0.03, bottomRightRadius, bottomRightDistNoise);
+
+        vec3 finalColor = vec3(1.0);
+        
+        if (topLeftEdge > 0.01) {
+            finalColor = mix(finalColor, customBlend(finalColor, topLeftColor), topLeftEdge);
+        }
+        if (topRightEdge > 0.01) {
+            finalColor = mix(finalColor, customBlend(finalColor, topRightColor), topRightEdge);
+        }
+        if (bottomLeftEdge > 0.01) {
+            finalColor = mix(finalColor, customBlend(finalColor, bottomLeftColor), bottomLeftEdge);
+        }
+        if (bottomRightEdge > 0.01) {
+            finalColor = mix(finalColor, customBlend(finalColor, bottomRightColor), bottomRightEdge);
+        }
+        gl_FragColor = vec4(finalColor, 1.0);
+      }
+    `;
+
+    function compileShader(gl, source, type) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        console.error('Shader compile error:', gl.getShaderInfoLog(shader));
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    function createProgram(gl, vertexShader, fragmentShader) {
+      const program = gl.createProgram();
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error('Program link error:', gl.getProgramInfoLog(program));
+        return null;
+      }
+      return program;
+    }
+
+    const vertexShader = compileShader(gl, vertexShaderSource, gl.VERTEX_SHADER);
+    const fragmentShader = compileShader(gl, fragmentShaderSource, gl.FRAGMENT_SHADER);
+    const program = createProgram(gl, vertexShader, fragmentShader);
+
+    gl.deleteShader(vertexShader);
+    gl.deleteShader(fragmentShader);
+
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      -1.0, -1.0,
+      1.0, -1.0,
+      -1.0,  1.0,
+      1.0,  1.0,
+    ]), gl.STATIC_DRAW);
+
+    const texCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+      0.0, 0.0,
+      1.0, 0.0,
+      0.0, 1.0,
+      1.0, 1.0,
+    ]), gl.STATIC_DRAW);
+
+    const positionLocation = gl.getAttribLocation(program, 'a_position');
+    const texCoordLocation = gl.getAttribLocation(program, 'a_texCoord');
+    const timeLocation = gl.getUniformLocation(program, 'u_time');
+
+    let startTime = Date.now();
+    
+    function render() {
+      const currentTime = Date.now();
+      const elapsedTime = (currentTime - startTime) / 1000;
+      gl.clearColor(1.0, 1.0, 1.0, 1.0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.useProgram(program);
+      gl.uniform1f(timeLocation, elapsedTime);
+      gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+      gl.enableVertexAttribArray(positionLocation);
+      gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+      gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
+      gl.enableVertexAttribArray(texCoordLocation);
+      gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      requestAnimationFrame(render);
+    }
+    render();
+  </script>
 </body>
 
 </html>
